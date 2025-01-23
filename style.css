@@ -459,3 +459,294 @@ main, section {
     background: rgba(0, 0, 0, 0.2);
     border-color: rgba(0, 0, 0, 0.3);
 }
+
+/* Feedback Section */
+#feedback {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 20px auto;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+}
+
+#feedback-form textarea {
+    width: 90%;
+    height: 100px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.submit-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+#feedback-display {
+    margin-top: 20px;
+    font-size: 1rem;
+    color: white;
+}
+
+#feedback-display div {
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Download Counter Animation */
+.counter {
+    font-size: 3rem;
+    margin-top: 10px;
+    animation: counterFade 1s ease-in-out;
+    text-align: center;
+}
+
+@keyframes counterFade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: black;
+    color: white;
+    overflow-x: hidden;
+    min-height: 100vh;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+#particleCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 4rem;
+    animation: glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px white;
+    }
+    to {
+        text-shadow: 0 0 30px white;
+    }
+}
+
+.toggle-container {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.toggle-button {
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.toggle-button:hover {
+    background-color: black;
+    color: white;
+}
+
+#download-counter {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    margin: 20px auto;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+    color: white;
+}
+
+.counter {
+    font-size: 3rem;
+    margin-top: 10px;
+    animation: counterFade 1s ease-in-out;
+}
+
+@keyframes counterFade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+#feedback {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 20px auto;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+}
+
+#feedback-form textarea {
+    width: 90%;
+    height: 100px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.submit-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #0056b3;
+}
+
+#feedback-display {
+    margin-top: 20px;
+    font-size: 1rem;
+    color: white;
+}
+/* Base styles for the light mode */
+body.light-mode {
+    background-color: #fff;
+    color: #333;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+body.light-mode .counter {
+    color: #ff4500; /* Fire color for light mode */
+    text-shadow: 0 0 10px #ff4500, 0 0 20px #ff4500, 0 0 30px #ff4500; /* Fire glow */
+    background-color: transparent; /* Remove the white square background */
+}
+
+/* Base styles for the dark mode */
+body.dark-mode {
+    background-color: #222;
+    color: #fff;
+    transition: background-color 0.5s, color 0.5s;
+}
+
+body.dark-mode .counter {
+    color: #ff4500; /* Fire color for dark mode */
+    text-shadow: 0 0 10px #ff4500, 0 0 20px #ff4500, 0 0 30px #ff4500; /* Fire glow */
+    background-color: transparent; /* Remove the dark background */
+}
+
+/* Fire-like animation for the counter */
+@keyframes hellfire {
+    0% {
+        color: #ff4500;
+        text-shadow: 0 0 10px #ff4500, 0 0 20px #ff4500, 0 0 30px #ff4500, 0 0 40px #ff4500;
+    }
+    25% {
+        color: #7d0000;
+        text-shadow: 0 0 10px #ff6347, 0 0 20px #ff6347, 0 0 30px #ff6347, 0 0 40px #ff6347;
+    }
+    50% {
+        color: #e6e0d9;
+        text-shadow: 0 0 10px #ff8c00, 0 0 20px #ff8c00, 0 0 30px #ff8c00, 0 0 40px #ff8c00;
+    }
+    75% {
+        color: #2c2828;
+        text-shadow: 0 0 10px #ff6347, 0 0 20px #ff6347, 0 0 30px #ff6347, 0 0 40px #ff6347;
+    }
+    100% {
+        color: #8683b4;
+        text-shadow: 0 0 10px #ff4500, 0 0 20px #ff4500, 0 0 30px #ff4500, 0 0 40px #ff4500;
+    }
+}
+
+/* Add fire animation on the counter */
+.counter {
+    font-size: 3rem;
+    margin-top: 10px;
+    animation: counterFade 1s ease-in-out, hellfire 1.5s infinite;
+    text-align: center;
+    transition: color 0.3s, background-color 0.3s; /* Smooth transition for color changes */
+}
+
+/* Fade-in and grow effect */
+@keyframes counterFade {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Animation for h2 */
+@keyframes h2Animation {
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    50% {
+        transform: translateY(10px);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+

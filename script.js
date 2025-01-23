@@ -190,3 +190,64 @@ function togglePlatform(button, platform) {
     });
     card.querySelector(`.download-platform.${platform}`).classList.add('active');
 }
+
+const feedbackForm = document.getElementById("feedback-form");
+const feedbackDisplay = document.getElementById("feedback-display");
+
+feedbackForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const feedbackInput = document.getElementById("feedback-input");
+    const feedbackText = feedbackInput.value.trim();
+    if (feedbackText) {
+        const feedbackItem = document.createElement("div");
+        feedbackItem.textContent = feedbackText;
+        feedbackDisplay.appendChild(feedbackItem);
+        
+        // Save feedback to localStorage
+        let feedbackList = JSON.parse(localStorage.getItem('feedbackList')) || [];
+        feedbackList.push(feedbackText);
+        localStorage.setItem('feedbackList', JSON.stringify(feedbackList));
+
+        // Clear the input field
+        feedbackInput.value = "";
+        feedbackItem.style.animation = "fadeIn 1s ease-in-out";
+    }
+});
+
+// Load feedback from localStorage when the page is loaded
+window.addEventListener('DOMContentLoaded', () => {
+    let feedbackList = JSON.parse(localStorage.getItem('feedbackList')) || [];
+    feedbackList.forEach(feedbackText => {
+        const feedbackItem = document.createElement("div");
+        feedbackItem.textContent = feedbackText;
+        feedbackDisplay.appendChild(feedbackItem);
+    });
+});
+
+// Increment Counter Animation
+let downloads = 0;
+const downloadCounter = document.getElementById("downloads");
+
+function incrementDownloads(finalValue) {
+    let count = 0;
+    const interval = setInterval(() => {
+        count += Math.ceil(finalValue / 100);
+        if (count >= finalValue) {
+            count = finalValue;
+            clearInterval(interval);
+        }
+        downloadCounter.textContent = count.toLocaleString();
+    }, 20);
+}
+
+// Simulate download count
+document.addEventListener("DOMContentLoaded", () => {
+    incrementDownloads(12); 
+});
+
+
+
+// Light/Dark Mode Toggle
+function toggleMode() {
+    document.body.classList.toggle("light-mode");
+}
