@@ -224,28 +224,30 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Increment Counter Animation
-let downloads = 0;
+// Get the current downloads from localStorage, or default to 0
+let downloads = parseInt(localStorage.getItem("downloads")) || 0;
 const downloadCounter = document.getElementById("downloads");
 
+// Function to increment the download count with animation
 function incrementDownloads(finalValue) {
-    let count = 0;
+    let count = downloads;
     const interval = setInterval(() => {
-        count += Math.ceil(finalValue / 100);
+        count += Math.ceil((finalValue - downloads) / 100);
         if (count >= finalValue) {
             count = finalValue;
             clearInterval(interval);
+            // Save the updated value to localStorage
+            localStorage.setItem("downloads", count);
         }
         downloadCounter.textContent = count.toLocaleString();
     }, 20);
 }
 
-// Simulate download count
+// Simulate download count increment on page load
 document.addEventListener("DOMContentLoaded", () => {
-    incrementDownloads(12); 
+    const incrementValue = downloads + 1; // Add 12 new downloads
+    incrementDownloads(incrementValue);
 });
-
-
 
 // Light/Dark Mode Toggle
 function toggleMode() {
