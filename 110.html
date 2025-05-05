@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JACK KUBZ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes flicker {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes buttonGlow {
+            0% { box-shadow: 0 0 5px rgba(255,255,255,0.5); }
+            50% { box-shadow: 0 0 20px rgba(255,255,255,0.9); }
+            100% { box-shadow: 0 0 5px rgba(255,255,255,0.5); }
+        }
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        .flickering {
+            animation: flicker 2s ease infinite;
+        }
+        .pulse-animation {
+            animation: pulse 1s infinite;
+        }
+        .shake-animation {
+            animation: shake 0.5s;
+        }
+        .gradient-bg {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        .game-container {
+            transition: all 0.3s ease;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .game-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        .snake-cell {
+            transition: all 0.1s ease;
+        }
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+        }
+        .cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            color: white;
+            font-size: 2rem;
+            text-align: center;
+        }
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            backdrop-filter: blur(5px);
+        }
+        .control-btn:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+        .magic-button {
+            position: relative;
+            overflow: hidden;
+            border: none;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 20px 40px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            animation: buttonGlow 2s infinite;
+            background: linear-gradient(45deg, #ff3366, #ff8c33, #33ff57, #3388ff);
+            background-size: 300% 300%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .magic-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            animation: buttonGlow 1s infinite, gradient 4s ease infinite;
+        }
+        .magic-button:active {
+            transform: translateY(1px);
+        }
+        .magic-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255,255,255,0.1);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+        }
+        .magic-button:hover::after {
+            left: 100%;
+            top: 100%;
+        }
+        .game-section {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            z-index: 100;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        .close-game {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            z-index: 101;
+        }
+        @media (max-width: 768px) {
+            .game-container {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            .cell {
+                font-size: 2rem;
+            }
+            .control-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            .magic-button {
+                padding: 15px 30px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body class="gradient-bg text-white min-h-screen font-sans">
+    <div class="container mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="text-center mb-16">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 text-white drop-shadow-lg">
+                JAC KUBS
+            </h1>
+            <p class="text-xl md:text-2xl max-w-2xl mx-auto text-white/80">
+                Three exciting games with vibrant colors and mobile-friendly design!
+            </p>
+        </header>
+
+        <!-- Game Buttons -->
+        <div class="flex flex-col md:flex-row justify-center items-center gap-8 mb-20">
+            <a href="007.html" class="magic-button snake-btn">
+                <i class="fas fa-snake mr-2"></i> Cosmic Bubble
+            </a>
+            <a href="008.html" class="magic-button ttt-btn">
+                <i class="fas fa-times-circle mr-2"></i> Color Pop Frenzy
+            </a>
+            <a href="#memory-game-section" class="magic-button memory-btn">
+                <i class="fas fa-brain mr-2"></i> Coming soon
+            </a>
+        </div>
+
+        <!-- Snake Game Section -->
+        <div id="snake-game-section" class="game-section">
+            <span class="close-game" onclick="closeGame('snake-game-section')">&times;</span>
+            <div class="max-w-4xl mx-auto bg-white/10 backdrop-blur-md rounded-2xl p-6 mt-12">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold text-white">
+                        <i class="fas fa-snake mr-2"></i> Snake Game
+                    </h2>
+                    <div class="flex gap-4">
+                        <button onclick="pauseSnakeGame()" id="pause-btn" class="bg-white/20 text-white px-4 py-2 rounded-lg hover:bg-white/30 transition">
+                            <i class="fas fa-pause mr-2"></i> Pause
+                        </button>
+                        <button onclick="startSnakeGame()" class="bg-white/20 text-white px-4 py-2 rounded-lg hover:bg-white/30 transition">
+                            <i class="fas fa-play mr-2"></i> Start
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <div id="snake-game" class="w-full h-96 md:h-[500px] bg-black/70 rounded-xl mx-auto mb-6 grid grid-cols-20 grid-rows-15 gap-px p-px"></div>
+                    <div id="snake-overlay" class="game-overlay hidden">
+                        <span class="text-4xl font-bold">GAME OVER</span>
+                        <span id="final-score" class="text-2xl mt-4">Score: 0</span>
+                        <button onclick="startSnakeGame()" class="mt-6 bg-white text-black px-6 py-3 rounded-full font-bold hover:bg-gray-200 transition">
+                            <i class="fas fa-redo mr-2"></i>Play Again
+                        </button>
+                    </div>
+                    <div class="controls md:hidden">
+                        <div class="control-btn" onclick="changeDirection('up')"><i class="fas fa-arrow-up"></i></div>
+                        <div class="control-btn" onclick="changeDirection('left')"><i class="fas fa-arrow-left"></i></div>
+                        <div class="control-btn" onclick="changeDirection('right')"><i class="fas fa-arrow-right"></i></div>
+                        <div class="control-btn" onclick="changeDirection('down')"><i class="fas fa-arrow-down"></i></div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center mt-4">
+                    <span id="snake-score" class="text-xl font-bold">Score: 0</span>
+                    <div class="text-sm text-white/70">
+                        Use arrow keys or buttons below to control
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tic Tac Toe Section -->
+        <div id="tic-tac-toe-section" class="game-section">
+            <span class="close-game" onclick="closeGame('tic-tac-toe-section')">&times;</span>
+            <div class="max-w-4xl mx-auto bg-white/10 backdrop-blur-md rounded-2xl p-6 mt-12">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold text-white">
+                        <i class="fas fa-times-circle mr-2"></i> Tic Tac Toe
+                    </h2>
+                    <button onclick="resetTicTacToe()" class="bg-white/20 text-white px-4 py-2 rounded-lg hover:bg-white/30 transition">
+                        <i class="fas fa-redo mr-2"></i> Reset
+                    </button>
+                </div>
+                
+                <div class="relative">
+                    <div id="tic-tac-toe" class="w-full max-w-md mx-auto h-96 md:h-[500px] mb-6 game-board"></div>
+                    <div id="ttt-overlay" class="game-overlay hidden">
+                        <span id="ttt-result" class="text-4xl font-bold">Player X wins!</span>
+                        <button onclick="resetTicTacToe()" class="mt-6 bg-white text-black px-6 py-3 rounded-full font-bold hover:bg-gray-200 transition">
+                            <i class="fas fa-redo mr-2"></i>Play Again
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center mt-4">
+                    <span id="ttt-status" class="text-xl font-bold">Player X's turn</span>
+                    <div class="text-sm text-white/70">
+                        Click on cells to make your move
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Memory Game Section -->
+        <div id="memory-game-section" class="game-section">
+            <span class="close-game" onclick="closeGame('memory-game-section')">&times;</span>
+            <div class="max-w-4xl mx-auto bg-white/10 backdrop-blur-md rounded-2xl p-6 mt-12">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-3xl font-bold text-white">
+                        <i class="fas fa-brain mr-2"></i> Memory Game
+                    </h2>
+                    <button onclick="setupMemoryGame()" class="bg-white/20 text-white px-4 py-2 rounded-lg hover:bg-white/30 transition">
+                        <i class="fas fa-sync-alt mr-2"></i> New Game
+                    </button>
+                </div>
+                
+                <div class="relative">
+                    <div id="memory-game" class="w-full max-w-2xl mx-auto h-96 md:h-[500px] mb-6 grid grid-cols-4 grid-rows-4 gap-2"></div>
+                    <div id="memory-overlay" class="game-overlay hidden">
+                        <span class="text-4xl font-bold">You Win!</span>
+                        <span id="memory-final-moves" class="text-2xl mt-4">Moves: 0</span>
+                        <button onclick="setupMemoryGame()" class="mt-6 bg-white text-black px-6 py-3 rounded-full font-bold hover:bg-gray-200 transition">
+                            <i class="fas fa-redo mr-2"></i>Play Again
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="flex justify-between items-center mt-4">
+                    <span id="memory-score" class="text-xl font-bold">Pairs: 0/8</span>
+                    <span id="memory-moves" class="text-xl font-bold">Moves: 0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-24 text-center text-white/70">
+            <p>© 2025 JACKUBS | PLAY AND ENJOY!</p>
+            <div class="flex justify-center space-x-6 mt-4">
+                <a href="#" class="hover:text-white transition"><i class="fab fa-twitter text-xl"></i></a>
+                <a href="#" class="hover:text-white transition"><i class="fab fa-instagram text-xl"></i></a>
+                <a href="#" class="hover:text-white transition"><i class="fab fa-github text-xl"></i></a>
+            </div>
+        </footer>
+    </div>
+
+</body>
+</html>

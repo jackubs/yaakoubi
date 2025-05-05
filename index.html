@@ -16,16 +16,22 @@
         <div class="toggle-container">
             <button class="toggle-button" onclick="toggleMode()">Switch Mode</button>
             <button class="toggle-button" onclick="scrollToGames()">View Games</button>
+            <a href="110.html" class="animated-button">Play Online</a>
+
+
+
         </div>
     </header>
 
     <main>
-    <!-- Download Counter Section -->
+    
+<!-- Download Counter Section -->
 <section id="download-counter">
     <h2>Total Downloads</h2>
     <div class="counter" id="downloads" title="Number of times our games have been downloaded">0</div>
 </section>
 
+<!-- Games Section -->
 <section id="games">
     <h2 style="text-align: center;">Our Games</h2>
     <div class="game">
@@ -44,29 +50,21 @@
             </div>
             <h3>THE MAZE KILLER</h3>
             <p>"Teleport, explode, and get lost in endless mazes—good luck finding your way out, or blowing it up!". Swipe through the gallery and click below to play!</p>
-
             <div class="download-section">
                 <div class="platform-switch">
                     <button class="platform-btn active" onclick="togglePlatform(this, 'pc')">
-                        <span class="platform-icon">💻</span> PC
+                        💻 PC
                     </button>
                     <button class="platform-btn" onclick="togglePlatform(this, 'mobile')">
-                        <span class="platform-icon">📱</span> Mobile
+                        📱 Mobile
                     </button>
                 </div>
-
                 <div class="download-options">
                     <div class="download-platform pc active">
-                        <a href="TheMazeKillah.zip" class="download-btn windows">
-                            <span class="download-icon">🪟</span>
-                            Download for Windows
-                        </a>
+                        <a href="TheMazeKillah.zip" class="download-btn windows">🪟 Download for Windows</a>
                     </div>
                     <div class="download-platform mobile">
-                        <a href="TheMazeKiller.apk" class="download-btn android">
-                            <span class="download-icon">🤖</span>
-                            Download for Android
-                        </a>
+                        <a href="TheMazeKiller.apk" class="download-btn android">🤖 Download for Android</a>
                     </div>
                 </div>
             </div>
@@ -86,31 +84,51 @@
                 <button class="slider-btn next-btn" onclick="moveSlide(1, 1)">&#10095;</button>
             </div>
             <h3>THE 100 bullets</h3>
-            <strong>**comming soon**</strong>
+            <strong>**coming soon**</strong>
             <p>Every shot counts, as ammo is limited and every enemy is a threat to your survival. Can you uncover the truth behind the well and defeat the creatures lurking in the shadows before you run out of bullets?</p>
-
             <div class="download-section">
                 <div class="platform-switch">
-                    <button class="platform-btn active" onclick="togglePlatform(this, 'pc')">
-                        <span class="platform-icon">💻</span> PC
-                    </button>
-                    <button class="platform-btn" onclick="togglePlatform(this, 'mobile')">
-                        <span class="platform-icon">📱</span> Mobile
-                    </button>
+                    <button class="platform-btn active" onclick="togglePlatform(this, 'pc')">💻 PC</button>
+                    <button class="platform-btn" onclick="togglePlatform(this, 'mobile')">📱 Mobile</button>
                 </div>
-
                 <div class="download-options">
                     <div class="download-platform pc active">
-                        <a href="game2-windows.zip" class="download-btn windows">
-                            <span class="download-icon">🪟</span>
-                            Download for Windows
-                        </a>
+                        <a href="game2-windows.zip" class="download-btn windows">🪟 Download for Windows</a>
                     </div>
                     <div class="download-platform mobile">
-                        <a href="game2-android.apk" class="download-btn android">
-                            <span class="download-icon">🤖</span>
-                            Download for Android
-                        </a>
+                        <a href="game2-android.apk" class="download-btn android">🤖 Download for Android</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Card 3 -->
+        <div class="game-card">
+            <div class="media-container">
+                <div class="media-slider">
+                    <img src="" alt="Game 3 - Screenshot 1">
+                    <video src="" controls></video>
+                    <img src="" alt="Game 3 - Screenshot 2">
+                    <img src="" alt="Game 3 - Screenshot 3">
+                    <img src="" alt="Game 3 - Screenshot 4">
+                </div>
+                <button class="slider-btn prev-btn" onclick="moveSlide(-1, 2)">&#10094;</button>
+                <button class="slider-btn next-btn" onclick="moveSlide(1, 2)">&#10095;</button>
+            </div>
+            <h3>Blink Out</h3>
+            <strong>**coming soon**</strong>
+            <p>Every shot counts, as ammo is limited and every enemy is a threat to your survival. Can you uncover the truth behind the well and defeat the creatures lurking in the shadows before you run out of bullets?</p>
+            <div class="download-section">
+                <div class="platform-switch">
+                    <button class="platform-btn active" onclick="togglePlatform(this, 'pc')">💻 PC</button>
+                    <button class="platform-btn" onclick="togglePlatform(this, 'mobile')">📱 Mobile</button>
+                </div>
+                <div class="download-options">
+                    <div class="download-platform pc active">
+                        <a href="" class="download-btn windows">🪟 Download for Windows</a>
+                    </div>
+                    <div class="download-platform mobile">
+                        <a href="" class="download-btn android">🤖 Download for Android</a>
                     </div>
                 </div>
             </div>
@@ -147,5 +165,11 @@
     </div>
 
     <script src="script.js"></script>
+
+
+
+    
+
+
 </body>
 </html>
