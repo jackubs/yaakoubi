@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,15 +13,18 @@
       text-align: center;
       margin: 0;
     }
+
     .container {
       max-width: 400px;
       margin: 3rem auto;
       padding: 2rem;
       background: #1e1e1e;
       border-radius: 12px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     }
-    input, button {
+
+    input,
+    button {
       width: 95%;
       margin-top: 1rem;
       padding: 1rem;
@@ -29,19 +33,23 @@
       border-radius: 8px;
       transition: 0.2s ease-in-out;
     }
+
     input {
       background: #2a2a2a;
       color: #fff;
     }
+
     button {
       background: #4caf50;
       color: white;
       cursor: pointer;
     }
+
     button:hover {
       background: #66bb6a;
       transform: scale(1.05);
     }
+
     .chat-box {
       background: #2a2a2a;
       padding: 1rem;
@@ -53,26 +61,48 @@
       white-space: pre-wrap;
       transition: background 0.3s;
     }
+
     .chat-msg {
       margin-bottom: 0.5rem;
       animation: fadeIn 0.4s ease-out;
     }
+
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(5px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+
     .animate {
       animation: pulse 1.2s ease-in-out;
     }
+
     @keyframes pulse {
-      0% { transform: scale(1); color: #fff; text-shadow: none; }
+      0% {
+        transform: scale(1);
+        color: #fff;
+        text-shadow: none;
+      }
+
       50% {
         transform: scale(1.3);
         color: #76ff03;
         text-shadow: 0 0 8px #76ff03, 0 0 16px #76ff03;
       }
-      100% { transform: scale(1); color: #fff; text-shadow: none; }
+
+      100% {
+        transform: scale(1);
+        color: #fff;
+        text-shadow: none;
+      }
     }
+
     #toast {
       position: fixed;
       bottom: 20px;
@@ -90,11 +120,13 @@
       transition: opacity 0.3s ease-in-out;
       z-index: 1000;
     }
+
     #toast.show {
       opacity: 1;
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h2>QR War</h2>
@@ -120,6 +152,26 @@
   </div>
 
   <div id="toast"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAu27pe6aJBzrzQ539evd7HHaS-4N1jTwM",
+      authDomain: "qrwar-53745.firebaseapp.com",
+      databaseURL: "https://qrwar-53745-default-rtdb.firebaseio.com",
+      projectId: "qrwar-53745",
+      storageBucket: "qrwar-53745.appspot.com",
+      messagingSenderId: "111115135478",
+      appId: "1:111115135478:web:8624eaeb278ef6e813ffd7",
+      measurementId: "G-ELWB886QJ4"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+  </script>
+
+
 
   <script>
     let currentPlayer = "";
@@ -190,60 +242,36 @@
 
     function sendMessage() {
       const to = document.getElementById("toPlayer").value.trim();
-      const msg = document.getElementById("msgText").value.trim().toLowerCase();
+      const msg = document.getElementById("msgText").value.trim();
       if (!to || !msg) return showToast("Recipient and message required");
 
-      const fullMsg = `${currentPlayer}: ${msg}`;
-      let inbox = JSON.parse(localStorage.getItem(`inbox_${to}`) || "[]");
-      inbox.push(fullMsg);
-      localStorage.setItem(`inbox_${to}`, JSON.stringify(inbox));
+      const fullMsg = {
+        from: currentPlayer,
+        text: msg,
+        time: Date.now()
+      };
 
-      if (msg.includes("give") && msg.includes("dt")) {
-        const amount = parseInt(msg.match(/(\d+)dt/)?.[1]);
-        if (money >= amount && amount > 0) {
-          money -= amount;
-          let theirMoney = parseInt(localStorage.getItem(`money_${to}`)) || 100;
-          theirMoney += amount;
-          localStorage.setItem(`money_${to}`, theirMoney);
-          saveState();
-          updateMoneyUI();
-          showToast(`Sent ${amount} DT to ${to}`);
-        } else showToast("Not enough DT!");
-      } else if (msg.includes("give") && msg.includes("sol")) {
-        const amount = parseInt(msg.match(/(\d+)sol/)?.[1]);
-        if (soldiers >= amount && amount > 0) {
-          soldiers -= amount;
-          let theirSol = parseInt(localStorage.getItem(`soldiers_${to}`)) || 0;
-          theirSol += amount;
-          localStorage.setItem(`soldiers_${to}`, theirSol);
-          saveState();
-          updateSoldierUI();
-          showToast(`Gave ${amount} soldiers to ${to}`);
-        } else showToast("Not enough soldiers!");
-      } else if (msg.includes("attack") && msg.includes("sol")) {
-        const amount = parseInt(msg.match(/(\d+)sol/)?.[1]);
-        if (soldiers >= amount && amount > 0) {
-          soldiers -= amount;
-          let enemy = parseInt(localStorage.getItem(`soldiers_${to}`)) || 0;
-          const dmg = Math.min(amount, enemy);
-          enemy -= dmg;
-          localStorage.setItem(`soldiers_${to}`, enemy);
-          saveState();
-          updateSoldierUI();
-          showToast(`Attacked ${to} with ${amount}, damage: ${dmg}`);
-        } else showToast("Not enough soldiers to attack!");
-      }
+      const chatRef = db.ref(`messages/${to}`);
+      chatRef.push(fullMsg);
 
-      if (to === currentPlayer) updateChatBox();
       document.getElementById("msgText").value = "";
     }
 
+
     function updateChatBox() {
       const box = document.getElementById("chatBox");
-      const inbox = JSON.parse(localStorage.getItem(`inbox_${currentPlayer}`) || "[]");
-      box.innerHTML = inbox.map(m => `<div class='chat-msg'>${m}</div>`).join("");
-      box.scrollTop = box.scrollHeight;
+      const chatRef = db.ref(`messages/${currentPlayer}`);
+
+      chatRef.off(); // Remove previous listeners to avoid duplicates
+      chatRef.on("value", snapshot => {
+        const msgs = snapshot.val() || {};
+        box.innerHTML = Object.values(msgs)
+          .map(m => `<div class='chat-msg'>${m.from}: ${m.text}</div>`)
+          .join("");
+        box.scrollTop = box.scrollHeight;
+      });
     }
+
 
     function clearMessages() {
       if (confirm("Clear all messages?")) {
@@ -266,4 +294,5 @@
     }
   </script>
 </body>
+
 </html>
