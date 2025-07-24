@@ -82,37 +82,28 @@
 <body>
   <div class="container">
     <h2>QR War - Firebase Multiplayer</h2>
-
     <div id="joinScreen">
       <p>Enter your player name:</p>
       <input type="text" id="playerName" placeholder="Your name" autocomplete="off" />
       <button onclick="joinGame()">Join Game</button>
     </div>
-
     <div id="gameScreen" style="display:none;">
       <h3>Welcome, <span id="displayName"></span></h3>
       <p>💰 Money: <span id="money">0</span> DT</p>
       <p>🪖 Soldiers: <span id="soldiers">0</span></p>
       <button onclick="buySoldier()">Buy Soldier (50 DT)</button>
-
       <h4>Private Chat</h4>
       <input type="text" id="toPlayer" placeholder="Send to..." autocomplete="off" />
       <input type="text" id="msgText" placeholder="Message... (give or attack)" autocomplete="off" />
       <button onclick="sendMessage()">Send</button>
-
       <div class="chat-box" id="chatBox"></div>
       <button onclick="clearMessages()" style="background:#f44336;">Clear Messages</button>
     </div>
   </div>
-
   <div id="toast"></div>
-
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-
   <script>
-    // Your Firebase config here:
     const firebaseConfig = {
       apiKey: "AIzaSyBU-oyVrZ0DIiUkZZDL57ua47SE-MZWNtw",
       authDomain: "qr-war-4a6a6.firebaseapp.com",
@@ -123,168 +114,115 @@
       appId: "1:565696146975:web:c6def761c433dfe00c6f2a",
       measurementId: "G-F2E213YVST"
     };
-
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-
     let currentPlayer = "";
     let playerData = { money: 0, soldiers: 0 };
-
-    // Simple toast alert
     function showToast(msg) {
       const toast = document.getElementById("toast");
       toast.textContent = msg;
       toast.classList.add("show");
       setTimeout(() => toast.classList.remove("show"), 3000);
     }
-
     function joinGame() {
-      const nameInput = document.getElementById("playerName");
-      const name = nameInput.value.trim();
-      if (!name) return showToast("Please enter a name");
+      const name = document.getElementById("playerName").value.trim();
+      if (!name) return showToast("Enter a name");
       currentPlayer = name;
-      document.getElementById("displayName").innerText = currentPlayer;
-
+      document.getElementById("displayName").textContent = name;
       document.getElementById("joinScreen").style.display = "none";
       document.getElementById("gameScreen").style.display = "block";
-
-      // Load or create player data in Firebase
-      const playerRef = db.ref('players/' + currentPlayer);
-      playerRef.once('value').then(snapshot => {
-        if (snapshot.exists()) {
-          playerData = snapshot.val();
-        } else {
+      const ref = db.ref('players/' + currentPlayer);
+      ref.once('value').then(snap => {
+        if (snap.exists()) playerData = snap.val();
+        else {
           playerData = { money: 100, soldiers: 0, inbox: [] };
-          playerRef.set(playerData);
+          ref.set(playerData);
         }
         updateUI();
       });
-
-      // Listen for changes to current player data
-      playerRef.on('value', snapshot => {
-        if (snapshot.exists()) {
-          playerData = snapshot.val();
+      ref.on('value', snap => {
+        if (snap.exists()) {
+          playerData = snap.val();
           updateUI();
         }
       });
-
-      // Listen for inbox changes for chat
-      const inboxRef = db.ref('players/' + currentPlayer + '/inbox');
-      inboxRef.on('value', snapshot => {
-        const msgs = snapshot.val() || [];
+      db.ref('players/' + currentPlayer + '/inbox').on('value', snap => {
+        const msgs = snap.val() || [];
         const chatBox = document.getElementById('chatBox');
         chatBox.innerHTML = msgs.map(m => `<div>${m}</div>`).join('');
         chatBox.scrollTop = chatBox.scrollHeight;
       });
+      setInterval(() => {
+        playerData.money += 5;
+        savePlayerData();
+      }, 5000);
     }
-
     function updateUI() {
-      document.getElementById('money').innerText = playerData.money || 0;
-      document.getElementById('soldiers').innerText = playerData.soldiers || 0;
+      document.getElementById('money').textContent = playerData.money;
+      document.getElementById('soldiers').textContent = playerData.soldiers;
     }
-
     function savePlayerData() {
       db.ref('players/' + currentPlayer).set(playerData);
     }
-
     function buySoldier() {
       if (playerData.money >= 50) {
         playerData.money -= 50;
-        playerData.soldiers += 1;
+        playerData.soldiers++;
         savePlayerData();
       } else {
         showToast("Not enough money!");
       }
     }
-
     function sendMessage() {
       const to = document.getElementById('toPlayer').value.trim();
       const msgRaw = document.getElementById('msgText').value.trim();
       const msg = msgRaw.toLowerCase();
-
       if (!to || !msg) return showToast("Recipient and message required");
-      if (to === currentPlayer) return showToast("You cannot send message to yourself");
-
+      if (to === currentPlayer) return showToast("You cannot message yourself");
       const toRef = db.ref('players/' + to);
-
-      toRef.once('value').then(snapshot => {
-        if (!snapshot.exists()) {
-          showToast("Recipient player does not exist");
-          return;
-        }
-
-        const toData = snapshot.val();
-
+      toRef.once('value').then(snap => {
+        if (!snap.exists()) return showToast("Player not found");
+        let toData = snap.val();
         if (msg.startsWith("give")) {
-          if (msg.includes("dt")) {
-            const amount = parseInt(msg.match(/(\d+)dt/)?.[1]);
-            if (amount && amount > 0 && playerData.money >= amount) {
+          const dtMatch = msg.match(/(\d+)dt/);
+          const solMatch = msg.match(/(\d+)sol/);
+          if (dtMatch) {
+            const amount = parseInt(dtMatch[1]);
+            if (playerData.money >= amount) {
               playerData.money -= amount;
-              toData.money = (toData.money || 100) + amount;
-            } else {
-              showToast("Not enough DT or invalid amount");
-              return;
-            }
-          } else if (msg.includes("sol")) {
-            const amount = parseInt(msg.match(/(\d+)sol/)?.[1]);
-            if (amount && amount > 0 && playerData.soldiers >= amount) {
+              toData.money = (toData.money || 0) + amount;
+            } else return showToast("Not enough DT");
+          } else if (solMatch) {
+            const amount = parseInt(solMatch[1]);
+            if (playerData.soldiers >= amount) {
               playerData.soldiers -= amount;
               toData.soldiers = (toData.soldiers || 0) + amount;
-            } else {
-              showToast("Not enough soldiers or invalid amount");
-              return;
-            }
-          } else {
-            showToast("Specify dt or sol to give");
-            return;
-          }
+            } else return showToast("Not enough soldiers");
+          } else return showToast("Use DT or SOL");
         } else if (msg.startsWith("attack") && msg.includes("sol")) {
           const amount = parseInt(msg.match(/(\d+)sol/)?.[1]);
-          if (amount && amount > 0 && playerData.soldiers >= amount) {
+          if (playerData.soldiers >= amount) {
             playerData.soldiers -= amount;
-            let enemySol = toData.soldiers || 0;
-            const dmg = Math.min(amount, enemySol);
-            toData.soldiers = enemySol - dmg;
-          } else {
-            showToast("Not enough soldiers to attack!");
-            return;
-          }
-        } else {
-          showToast("Unknown command. Use give or attack.");
-          return;
-        }
-
-        // Update both players atomically
+            toData.soldiers = Math.max(0, (toData.soldiers || 0) - amount);
+          } else return showToast("Not enough soldiers to attack");
+        } else return showToast("Unknown command");
         const updates = {};
         updates['players/' + currentPlayer] = playerData;
         updates['players/' + to] = toData;
-
         db.ref().update(updates).then(() => {
-          // Add message to recipient's inbox
-          const inboxRef = db.ref('players/' + to + '/inbox');
-          inboxRef.once('value').then(snap => {
-            const inbox = snap.val() || [];
-            inbox.push(`${currentPlayer}: ${msgRaw}`);
-            inboxRef.set(inbox);
+          const inbox = snap.val().inbox || [];
+          inbox.push(`${currentPlayer}: ${msgRaw}`);
+          db.ref('players/' + to + '/inbox').set(inbox);
+          db.ref('players/' + currentPlayer + '/inbox').once('value').then(s => {
+            const myInbox = s.val() || [];
+            myInbox.push(`You to ${to}: ${msgRaw}`);
+            db.ref('players/' + currentPlayer + '/inbox').set(myInbox);
           });
-
-          // Add message to sender's inbox
-          const senderInboxRef = db.ref('players/' + currentPlayer + '/inbox');
-          senderInboxRef.once('value').then(snap => {
-            const senderInbox = snap.val() || [];
-            senderInbox.push(`You to ${to}: ${msgRaw}`);
-            senderInboxRef.set(senderInbox);
-          });
-
-          showToast("Message sent!");
+          showToast("Message sent");
           document.getElementById('msgText').value = '';
-          updateUI();
-        }).catch(err => {
-          showToast("Error saving data: " + err.message);
         });
       });
     }
-
     function clearMessages() {
       if (confirm("Clear all messages?")) {
         db.ref('players/' + currentPlayer + '/inbox').set([]);
