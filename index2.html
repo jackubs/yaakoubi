@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QR War - Firebase Multiplayer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 400px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background: #1e1e1e;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    input, button {
+      width: 95%;
+      margin-top: 1rem;
+      padding: 1rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    input {
+      background: #2a2a2a;
+      color: #fff;
+    }
+    button {
+      background: #4caf50;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    button:hover {
+      background: #66bb6a;
+      transform: scale(1.05);
+    }
+    .chat-box {
+      background: #2a2a2a;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      height: 200px;
+      overflow-y: auto;
+      text-align: left;
+      white-space: pre-wrap;
+      font-size: 0.9rem;
+      user-select: text;
+    }
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255, 0, 0, 0.85);
+      color: #fff;
+      padding: 0.9rem 1.5rem;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 1rem;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease-in-out;
+      z-index: 1000;
+    }
+    #toast.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>QR War - Firebase Multiplayer</h2>
+    <div id="joinScreen">
+      <p>Enter your player name:</p>
+      <input type="text" id="playerName" placeholder="Your name" autocomplete="off" />
+      <button onclick="joinGame()">Join Game</button>
+    </div>
+    <div id="gameScreen" style="display:none;">
+      <h3>Welcome, <span id="displayName"></span></h3>
+      <p>💰 Money: <span id="money">0</span> DT</p>
+      <p>🪖 Soldiers: <span id="soldiers">0</span></p>
+      <button onclick="buySoldier()">Buy Soldier (50 DT)</button>
+      <h4>Private Chat</h4>
+      <input type="text" id="toPlayer" placeholder="Send to..." autocomplete="off" />
+      <input type="text" id="msgText" placeholder="Message... (give or attack)" autocomplete="off" />
+      <button onclick="sendMessage()">Send</button>
+      <div class="chat-box" id="chatBox"></div>
+      <button onclick="clearMessages()" style="background:#f44336;">Clear Messages</button>
+    </div>
+  </div>
+  <div id="toast"></div>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBU-oyVrZ0DIiUkZZDL57ua47SE-MZWNtw",
+      authDomain: "qr-war-4a6a6.firebaseapp.com",
+      databaseURL: "https://qr-war-4a6a6-default-rtdb.firebaseio.com",
+      projectId: "qr-war-4a6a6",
+      storageBucket: "qr-war-4a6a6.appspot.com",
+      messagingSenderId: "565696146975",
+      appId: "1:565696146975:web:c6def761c433dfe00c6f2a",
+      measurementId: "G-F2E213YVST"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    let currentPlayer = "";
+    let playerData = { money: 0, soldiers: 0 };
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 3000);
+    }
+    function joinGame() {
+      const name = document.getElementById("playerName").value.trim();
+      if (!name) return showToast("Enter a name");
+      currentPlayer = name;
+      document.getElementById("displayName").textContent = name;
+      document.getElementById("joinScreen").style.display = "none";
+      document.getElementById("gameScreen").style.display = "block";
+      const ref = db.ref('players/' + currentPlayer);
+      ref.once('value').then(snap => {
+        if (snap.exists()) playerData = snap.val();
+        else {
+          playerData = { money: 100, soldiers: 0, inbox: [] };
+          ref.set(playerData);
+        }
+        updateUI();
+      });
+      ref.on('value', snap => {
+        if (snap.exists()) {
+          playerData = snap.val();
+          updateUI();
+        }
+      });
+      db.ref('players/' + currentPlayer + '/inbox').on('value', snap => {
+        const msgs = snap.val() || [];
+        const chatBox = document.getElementById('chatBox');
+        chatBox.innerHTML = msgs.map(m => `<div>${m}</div>`).join('');
+        chatBox.scrollTop = chatBox.scrollHeight;
+      });
+      setInterval(() => {
+        playerData.money += 5;
+        savePlayerData();
+      }, 5000);
+    }
+    function updateUI() {
+      document.getElementById('money').textContent = playerData.money;
+      document.getElementById('soldiers').textContent = playerData.soldiers;
+    }
+    function savePlayerData() {
+      db.ref('players/' + currentPlayer).set(playerData);
+    }
+    function buySoldier() {
+      if (playerData.money >= 50) {
+        playerData.money -= 50;
+        playerData.soldiers++;
+        savePlayerData();
+      } else {
+        showToast("Not enough money!");
+      }
+    }
+    function sendMessage() {
+      const to = document.getElementById('toPlayer').value.trim();
+      const msgRaw = document.getElementById('msgText').value.trim();
+      const msg = msgRaw.toLowerCase();
+      if (!to || !msg) return showToast("Recipient and message required");
+      if (to === currentPlayer) return showToast("You cannot message yourself");
+      const toRef = db.ref('players/' + to);
+      toRef.once('value').then(snap => {
+        if (!snap.exists()) return showToast("Player not found");
+        let toData = snap.val();
+        if (msg.startsWith("give")) {
+          const dtMatch = msg.match(/(\d+)dt/);
+          const solMatch = msg.match(/(\d+)sol/);
+          if (dtMatch) {
+            const amount = parseInt(dtMatch[1]);
+            if (playerData.money >= amount) {
+              playerData.money -= amount;
+              toData.money = (toData.money || 0) + amount;
+            } else return showToast("Not enough DT");
+          } else if (solMatch) {
+            const amount = parseInt(solMatch[1]);
+            if (playerData.soldiers >= amount) {
+              playerData.soldiers -= amount;
+              toData.soldiers = (toData.soldiers || 0) + amount;
+            } else return showToast("Not enough soldiers");
+          } else return showToast("Use DT or SOL");
+        } else if (msg.startsWith("attack") && msg.includes("sol")) {
+          const amount = parseInt(msg.match(/(\d+)sol/)?.[1]);
+          if (playerData.soldiers >= amount) {
+            playerData.soldiers -= amount;
+            toData.soldiers = Math.max(0, (toData.soldiers || 0) - amount);
+          } else return showToast("Not enough soldiers to attack");
+        } else return showToast("Unknown command");
+        const updates = {};
+        updates['players/' + currentPlayer] = playerData;
+        updates['players/' + to] = toData;
+        db.ref().update(updates).then(() => {
+          const inbox = snap.val().inbox || [];
+          inbox.push(`${currentPlayer}: ${msgRaw}`);
+          db.ref('players/' + to + '/inbox').set(inbox);
+          db.ref('players/' + currentPlayer + '/inbox').once('value').then(s => {
+            const myInbox = s.val() || [];
+            myInbox.push(`You to ${to}: ${msgRaw}`);
+            db.ref('players/' + currentPlayer + '/inbox').set(myInbox);
+          });
+          showToast("Message sent");
+          document.getElementById('msgText').value = '';
+        });
+      });
+    }
+    function clearMessages() {
+      if (confirm("Clear all messages?")) {
+        db.ref('players/' + currentPlayer + '/inbox').set([]);
+      }
+    }
+  </script>
+</body>
+</html>
