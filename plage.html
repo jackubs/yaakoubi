@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Focus & Productivity Center</title>
+<link rel="manifest" href="manifest.json">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top, #1e1e2f, #0e0e1f);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1 {
+    margin-top: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .app-container {
+    max-width: 400px;
+    width: 90%;
+  }
+
+  .section {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 15px 0;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    transition: all 0.3s;
+  }
+
+  .section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  }
+
+  input, button {
+    border: none;
+    outline: none;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin: 6px;
+    font-size: 14px;
+  }
+
+  input {
+    width: 65%;
+  }
+
+  button {
+    background: #00bfa6;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s, transform 0.2s;
+  }
+
+  button:hover {
+    background: #00d6bc;
+    transform: scale(1.05);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+  }
+
+  li {
+    background: rgba(255,255,255,0.08);
+    margin: 5px 0;
+    padding: 8px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  li span {
+    cursor: pointer;
+    color: #ff6b6b;
+  }
+
+  .timer-container {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 15px auto;
+  }
+
+  svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: rotate(-90deg);
+  }
+
+  circle {
+    fill: none;
+    stroke: #00bfa6;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear;
+  }
+
+  .timer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.8em;
+    font-weight: 600;
+  }
+
+  .quote {
+    font-style: italic;
+    margin-top: 10px;
+    color: #bdbdf0;
+  }
+
+  #install-btn {
+    background: #ffcc00;
+    color: #000;
+    margin-top: 10px;
+    font-weight: 700;
+  }
+</style>
+</head>
+<body>
+
+<h1>🧠 Focus & Productivity Center</h1>
+<p>Stay productive, motivated, and calm — even offline.</p>
+
+<div class="app-container">
+
+  <div class="section">
+    <h2>📝 To-Do List</h2>
+    <input type="text" id="taskInput" placeholder="Add a new task">
+    <button onclick="addTask()">Add</button>
+    <ul id="taskList"></ul>
+  </div>
+
+  <div class="section">
+    <h2>⏱️ Pomodoro Timer</h2>
+    <div class="timer-container">
+      <svg width="160" height="160">
+        <circle id="progress-ring" r="70" cx="80" cy="80" stroke-dasharray="440" stroke-dashoffset="0" />
+      </svg>
+      <div class="timer" id="timer">25:00</div>
+    </div>
+    <button onclick="startTimer()">Start</button>
+    <button onclick="resetTimer()">Reset</button>
+  </div>
+
+  <div class="section">
+    <h2>💬 Daily Motivation</h2>
+    <p class="quote" id="quote"></p>
+    <button onclick="newQuote()">New Quote</button>
+  </div>
+
+  <div class="section">
+    <h2>📱 Install This App</h2>
+    <p>Use it offline anytime!</p>
+    <button id="install-btn">⬇️ Install App</button>
+  </div>
+
+</div>
+
+<audio id="ding" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
+
+<script>
+/* --- To-Do List --- */
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+const taskList = document.getElementById('taskList');
+
+function renderTasks() {
+  taskList.innerHTML = '';
+  tasks.forEach((task, i) => {
+    const li = document.createElement('li');
+    li.innerHTML = `${task} <span onclick="removeTask(${i})">✖</span>`;
+    taskList.appendChild(li);
+  });
+}
+function addTask() {
+  const input = document.getElementById('taskInput');
+  if (input.value.trim() === '') return;
+  tasks.push(input.value.trim());
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+  input.value = '';
+  renderTasks();
+}
+function removeTask(i) {
+  tasks.splice(i, 1);
+  localStorage.setItem('tasks', JSON.stringify(tasks));
+  renderTasks();
+}
+renderTasks();
+
+/* --- Pomodoro Timer --- */
+let time = 25 * 60;
+let timerInterval;
+const ring = document.getElementById('progress-ring');
+const totalLength = 440;
+
+function updateCircle() {
+  const percent = time / (25 * 60);
+  ring.style.strokeDashoffset = totalLength * (1 - percent);
+}
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    time--;
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    document.getElementById('timer').textContent =
+      `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    updateCircle();
+
+    if (time <= 0) {
+      clearInterval(timerInterval);
+      document.getElementById('ding').play();
+      alert('Time’s up! Take a 5-minute break.');
+      time = 5 * 60;
+      startTimer();
+    }
+  }, 1000);
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  time = 25 * 60;
+  document.getElementById('timer').textContent = '25:00';
+  updateCircle();
+}
+
+/* --- Quotes --- */
+const quotes = [
+  "Focus on being productive instead of busy.",
+  "Don’t watch the clock; do what it does. Keep going.",
+  "Small steps every day lead to big results.",
+  "Discipline is choosing what you want most over what you want now.",
+  "Dream big, start small, act now.",
+  "Progress, not perfection."
+];
+function newQuote() {
+  const q = quotes[Math.floor(Math.random() * quotes.length)];
+  document.getElementById('quote').textContent = `"${q}"`;
+}
+newQuote();
+
+/* --- PWA --- */
+let deferredPrompt;
+const installBtn = document.getElementById('install-btn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  installBtn.style.display = 'inline-block';
+});
+
+installBtn.addEventListener('click', async () => {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      installBtn.textContent = '✅ Installed';
+    }
+    deferredPrompt = null;
+  }
+});
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+</script>
+</body>
+</html>

@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JACKUBS - Games Hub</title>
     <link rel="stylesheet" href="style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#000000">
 </head>
 <body>
@@ -17,130 +15,214 @@
             <button class="toggle-button" onclick="toggleMode()">Switch Mode</button>
             <button class="toggle-button" onclick="scrollToGames()">View Games</button>
             <a href="110.html" class="animated-button">Play Online</a>
-
-
+            
 
         </div>
+        <a href="plage.html">
+    <button class="magic-button">✨ Explore More</button>
+        </a>
+
     </header>
 
     <main>
-    
-<!-- Download Counter Section -->
-<section id="download-counter">
-    <h2>Total Downloads</h2>
-    <div class="counter" id="downloads" title="Number of times our games have been downloaded">0</div>
-</section>
+        <!-- Download Counter Section -->
+        <section id="download-counter">
+            <h2>Total Downloads</h2>
+            <div class="counter" id="downloads" title="Number of times our games have been downloaded">0</div>
+        </section>
 
-<!-- Games Section -->
-<section id="games">
-    <h2 style="text-align: center;">Our Games</h2>
-    <div class="game">
-        <!-- Game Card 1 -->
-        <div class="game-card">
-            <div class="media-container">
-                <div class="media-slider">
-                    <img src="1.png" alt="Game 1 - Screenshot 1">
-                    <video src="the mama.mp4" controls></video>
-                    <img src="2.png" alt="Game 1 - Screenshot 2">
-                    <img src="3.png" alt="Game 1 - Screenshot 3">
-                    <img src="4.png" alt="Game 1 - Screenshot 4">
-                </div>
-                <button class="slider-btn prev-btn" onclick="moveSlide(-1, 0)">&#10094;</button>
-                <button class="slider-btn next-btn" onclick="moveSlide(1, 0)">&#10095;</button>
-            </div>
-            <h3>THE MAZE KILLER</h3>
-            <p>"Teleport, explode, and get lost in endless mazes—good luck finding your way out, or blowing it up!". Swipe through the gallery and click below to play!</p>
-            <div class="download-section">
-                <div class="platform-switch">
-                    <button class="platform-btn active" onclick="togglePlatform(this, 'pc')">
-                        💻 PC
-                    </button>
-                    <button class="platform-btn" onclick="togglePlatform(this, 'mobile')">
-                        📱 Mobile
-                    </button>
-                </div>
-                <div class="download-options">
-                    <div class="download-platform pc active">
-                        <a href="TheMazeKillah.zip" class="download-btn windows">🪟 Download for Windows</a>
+        <!-- Games Section -->
+        <section id="games">
+            <h2 style="text-align: center;">Our Games</h2>
+            <div class="game">
+                <!-- Game Card 1 -->
+                <div class="game-card">
+                    <div class="media-container">
+                        <div class="media-slider">
+                            <img src="1.png" alt="Game 1 - Screenshot 1">
+                            <video src="the mama.mp4" controls></video>
+                            <img src="2.png" alt="Game 1 - Screenshot 2">
+                            <img src="3.png" alt="Game 1 - Screenshot 3">
+                            <img src="4.png" alt="Game 1 - Screenshot 4">
+                        </div>
+                        <button class="slider-btn prev-btn" onclick="moveSlide(-1, 0)">&#10094;</button>
+                        <button class="slider-btn next-btn" onclick="moveSlide(1, 0)">&#10095;</button>
                     </div>
-                    <div class="download-platform mobile">
-                        <a href="TheMazeKiller.apk" class="download-btn android">🤖 Download for Android</a>
+                    <h3>THE MAZE KILLER</h3>
+                    <p>"Teleport, explode, and get lost in endless mazes—good luck finding your way out, or blowing it up!". Swipe through the gallery and click below to play!</p>
+                    <div class="download-section">
+                        <div class="platform-switch">
+                            <button class="platform-btn active" onclick="togglePlatform(this, 'pc')">💻 PC</button>
+                            <button class="platform-btn" onclick="togglePlatform(this, 'mobile')">📱 Mobile</button>
+                        </div>
+                        <div class="download-options">
+                            <div class="download-platform pc active">
+                                <a href="TheMazeKillah.zip" class="download-btn windows">🪟 Download for Windows</a>
+                            </div>
+                            <div class="download-platform mobile">
+                                <a href="TheMazeKiller.apk" class="download-btn android">🤖 Download for Android</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Game Card 2 -->
-        <div class="game-card">
-            <div class="media-container">
-                <div class="media-slider">
-                    <img src="Capture d'écran 2025-01-13 110603.png" alt="Game 2 - Screenshot 1">
-                    <video src="bullets (1).mp4" controls></video>
-                    <img src="Capture d'écran 2025-01-13 110202.png" alt="Game 2 - Screenshot 2">
-                    <img src="Capture d'écran 2025-01-13 110222.png" alt="Game 2 - Screenshot 3">
-                    <img src="Capture d'écran 2025-01-13 110233.png" alt="Game 2 - Screenshot 4">
-                </div>
-                <button class="slider-btn prev-btn" onclick="moveSlide(-1, 1)">&#10094;</button>
-                <button class="slider-btn next-btn" onclick="moveSlide(1, 1)">&#10095;</button>
-            </div>
-            <h3>THE 100 bullets</h3>
-            <strong>**coming soon**</strong>
-            <p>Every shot counts, as ammo is limited and every enemy is a threat to your survival. Can you uncover the truth behind the well and defeat the creatures lurking in the shadows before you run out of bullets?</p>
-            <div class="download-section">
-                <div class="platform-switch">
-                    <button class="platform-btn active" onclick="togglePlatform(this, 'pc')">💻 PC</button>
-                    <button class="platform-btn" onclick="togglePlatform(this, 'mobile')">📱 Mobile</button>
-                </div>
-                <div class="download-options">
-                    <div class="download-platform pc active">
-                        <a href="game2-windows.zip" class="download-btn windows">🪟 Download for Windows</a>
+                <!-- Game Card 2 -->
+                <div class="game-card">
+                    <div class="media-container">
+                        <div class="media-slider">
+                            <img src="Capture d'écran 2025-01-13 110603.png" alt="Game 2 - Screenshot 1">
+                            <video src="bullets (1).mp4" controls></video>
+                            <img src="Capture d'écran 2025-01-13 110202.png" alt="Game 2 - Screenshot 2">
+                            <img src="Capture d'écran 2025-01-13 110222.png" alt="Game 2 - Screenshot 3">
+                            <img src="Capture d'écran 2025-01-13 110233.png" alt="Game 2 - Screenshot 4">
+                        </div>
+                        <button class="slider-btn prev-btn" onclick="moveSlide(-1, 1)">&#10094;</button>
+                        <button class="slider-btn next-btn" onclick="moveSlide(1, 1)">&#10095;</button>
                     </div>
-                    <div class="download-platform mobile">
-                        <a href="game2-android.apk" class="download-btn android">🤖 Download for Android</a>
+                    <h3>THE 100 bullets</h3>
+                    <strong>**coming soon**</strong>
+                    <p>Every shot counts, as ammo is limited and every enemy is a threat to your survival. Can you uncover the truth behind the well and defeat the creatures lurking in the shadows before you run out of bullets?</p>
+                    <div class="download-section">
+                        <div class="platform-switch">
+                            <button class="platform-btn active" onclick="togglePlatform(this, 'pc')">💻 PC</button>
+                            <button class="platform-btn" onclick="togglePlatform(this, 'mobile')">📱 Mobile</button>
+                        </div>
+                        <div class="download-options">
+                            <div class="download-platform pc active">
+                                <a href="game2-windows.zip" class="download-btn windows">🪟 Download for Windows</a>
+                            </div>
+                            <div class="download-platform mobile">
+                                <a href="game2-android.apk" class="download-btn android">🤖 Download for Android</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Game Card 3 -->
-        <div class="game-card">
-            <div class="media-container">
-                <div class="media-slider">
-                    <img src="ChatGPT Image 10 sept. 2025, 04_53_16.png" alt="Game 3 - Screenshot 1">
-                    <video src="" controls></video>
-                    <img src="ChatGPT Image 10 sept. 2025, 04_53_16.png" alt="Game 3 - Screenshot 2">
-                    <img src="ChatGPT Image 10 sept. 2025, 04_53_16.png" alt="Game 3 - Screenshot 3">
-                    <img src="ChatGPT Image 10 sept. 2025, 04_53_16.png" alt="Game 3 - Screenshot 4">
-                </div>
-                <button class="slider-btn prev-btn" onclick="moveSlide(-1, 2)">&#10094;</button>
-                <button class="slider-btn next-btn" onclick="moveSlide(1, 2)">&#10095;</button>
-            </div>
-            <h3>Blink Out</h3>
-            <strong>Your Eyes Are the Controller 👁️</strong>
-            <p>Step into a world where even a blink can change everything.
+                <!-- Game Card 3 -->
+                <div class="game-card">
+                    <div class="media-container">
+                        <div class="media-slider">
+                            <img src="ChatGPT Image 10 sept. 2025, 04_53_16.png" alt="Game 3 - Screenshot 1">
+                            <video src="" controls></video>
+                            <img src="ChatGPT Image 10 sept. 2025, 04_53_16.png" alt="Game 3 - Screenshot 2">
+                            <img src="ChatGPT Image 10 sept. 2025, 04_53_16.png" alt="Game 3 - Screenshot 3">
+                            <img src="ChatGPT Image 10 sept. 2025, 04_53_16.png" alt="Game 3 - Screenshot 4">
+                        </div>
+                        <button class="slider-btn prev-btn" onclick="moveSlide(-1, 2)">&#10094;</button>
+                        <button class="slider-btn next-btn" onclick="moveSlide(1, 2)">&#10095;</button>
+                    </div>
+                    <h3>Blink Out</h3>
+                    <strong>Your Eyes Are the Controller 👁️</strong>
+                    <p>Step into a world where even a blink can change everything.
 Enemies powered by ruthless AI are hunting you down, waiting for the perfect moment to strike. How to survive? Don’t just move—dodge with your eyes.
 Time your blinks, vanish in an instant, and reappear before it’s too late. Every blink is a gamble. Every second is survival. How long can you last before the darkness catches you?</p>
-            <div class="download-section">
-                <div class="platform-switch">
-                    
-                    <button class="platform-btn" onclick="togglePlatform(this, 'mobile')">📱 Mobile</button>
-                </div>
-                <div class="download-options">
-                    <div class="download-platform pc active">
-                        <a href="" class="download-btn windows">🪟 Download for Windows</a>
-                    </div>
-                    <div class="download-platform mobile">
-                        <a href="the Creeps_creeps.apk" class="download-btn android">🤖 Download for Android</a>
+                    <div class="download-section">
+                        <div class="platform-switch">
+                            <button class="platform-btn" onclick="togglePlatform(this, 'mobile')">📱 Mobile</button>
+                        </div>
+                        <div class="download-options">
+                           <div class="download-platform mobile">
+                                <a href="the Creeps_creeps.apk" class="download-btn android">🤖 Download for Android</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</section>
 
+                <!-- Game Card 4 -->
+                <div class="game-card">
+                    <div class="media-container">
+                        <div class="media-slider">
+                            
+                            <video src="papalis.mp4" controls></video>
+                            <img src="game5-2.png" alt="Game 4 - Screenshot 2">
+                            <img src="game5-3.png" alt="Game 4 - Screenshot 3">
+                            <img src="game5-4.png" alt="Game 4 - Screenshot 4">
+                        </div>
+                        <button class="slider-btn prev-btn" onclick="moveSlide(-1, 3)">&#10094;</button>
+                        <button class="slider-btn next-btn" onclick="moveSlide(1, 3)">&#10095;</button>
+                    </div>
+                    <h3>Children of the checkpoint </h3>
+                    <p>In a war-torn world, a young boy is on a desperate quest to find his family. Every step is dangerous,
+                         as ruthless soldiers roam the streets, hunting anyone in their path—even children. To survive, he must stay hidden, move silently,
+                          and outsmart his pursuers. Every shadow can be a refuge, every sound a threat. Will he reunite with his loved ones,
+                           or will the darkness claim him first?</p>
+                    <div class="download-section">
+                        <div class="platform-switch">
+                            <button class="platform-btn active" onclick="togglePlatform(this, 'pc')">💻 PC</button>
+                            
+                        </div>
+                        <div class="download-options">
+                            <div class="download-platform pc active">
+                                <a href="childrenofcheckpoint.zip" class="download-btn windows">🪟 Download for Windows</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Card 5 -->
+                <div class="game-card">
+                    <div class="media-container">
+                        <div class="media-slider">
+                            
+                            <video src="trust.mp4" controls></video>
+                            
+                            
+                            
+                        </div>
+                        <button class="slider-btn prev-btn" onclick="moveSlide(-1, 4)">&#10094;</button>
+                        <button class="slider-btn next-btn" onclick="moveSlide(1, 4)">&#10095;</button>
+                    </div>
+                    <h3>Who's The Best</h3>
+                    <p>Who’s the Best is a fast-paced co-op and versus game packed with combos, traps, and doors. Work together to clear rooms, solve puzzles,
+                         and chain powerful combo attacks — or face off to prove who’s the best.</p>
+                    <div class="download-section">
+                        <div class="platform-switch">
+                            <button class="platform-btn active" onclick="togglePlatform(this, 'pc')">💻 PC</button>
+                        </div>
+                        <div class="download-options">
+                            <div class="download-platform pc active">
+                                <a href="game5-windows.zip" class="download-btn windows">🪟 Download for Windows</a>
+                            </div>
+                        
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Card 6 -->
+                <div class="game-card">
+                    <div class="media-container">
+                        <div class="media-slider">
+                            <img src="game6-1.png" alt="Game 6 - Screenshot 1">
+                            <video src="game6.mp4" controls></video>
+                            <img src="game6-2.png" alt="Game 6 - Screenshot 2">
+                            <img src="game6-3.png" alt="Game 6 - Screenshot 3">
+                            <img src="game6-4.png" alt="Game 6 - Screenshot 4">
+                        </div>
+                        <button class="slider-btn prev-btn" onclick="moveSlide(-1, 5)">&#10094;</button>
+                        <button class="slider-btn next-btn" onclick="moveSlide(1, 5)">&#10095;</button>
+                    </div>
+                    <h3>THE MAZE KILLER 2</h3>
+                    <p>Dive into The Maze Killer 2, a thrilling cooperative maze-escape game where teamwork is everything. You and your partner navigate through twisting labyrinths filled with enemies, hidden paths and traps. Outsmart foes together, cover each other’s backs,
+                         solve maze puzzles and coordinate your moves if you want to survive.</p>
+                    <div class="download-section">
+                        <div class="platform-switch">
+                            <button class="platform-btn active" onclick="togglePlatform(this, 'pc')">💻 PC</button>
+                            
+                        </div>
+                        <div class="download-options">
+                            <div class="download-platform pc active">
+                                <a href="game6-windows.zip" class="download-btn windows">🪟 Download for Windows</a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </section>
-          <!-- Feedback Section -->
-          <section id="feedback">
+
+        <!-- Feedback Section -->
+        <section id="feedback">
             <h2>Player Feedback</h2>
             <form id="feedback-form">
                 <textarea id="feedback-input" placeholder="Share your thoughts..." required></textarea>
@@ -163,15 +245,8 @@ Time your blinks, vanish in an instant, and reappear before it’s too late. Eve
         <a href="https://www.instagram.com/_jacob_yk/" target="_blank">📷</a>
         <a href="https://www.youtube.com/@jacob.8384" target="_blank">📺</a>
         <a href="mailto:josef.yakoubi321@gmail.com">📧</a>
-
     </div>
 
     <script src="script.js"></script>
-
-
-
-    
-
-
 </body>
 </html>
